@@ -1,10 +1,19 @@
+/*
+ * Take panoramics photos with ESP32-Cam and Python
+ * Change WIFI SSID and WIFIPASS for your own. You need to know what is the IP address that the module takes.
+ * 
+ * Github: https://github.com/gsampallo/PanoramicCam
+ * Blog: www.gsampallo.com/blog/
+ * Twitter @gsampallo
+ * 
+ */
 #include <esp32cam.h>
 #include <WebServer.h>
 #include <WiFi.h>
 
 
-const char* WIFI_SSID = "network";
-const char* WIFI_PASS = "password";
+const char* WIFI_SSID = "SSID";
+const char* WIFI_PASS = "PASSWORD";
 
 WebServer server(80);
 
@@ -12,12 +21,12 @@ const int motorPin1 = 12;
 const int motorPin2 = 13;
 const int motorPin3 = 15;
 const int motorPin4 = 14;
+int origin = 0;
 
-int motorSpeed = 1200;   //variable para fijar la velocidad
-int stepCounter = 0;     // contador para los pasos
-int stepsPerRev = 512;  // pasos para una vuelta completa
+int motorSpeed = 1200;   //spped
+int stepCounter = 0;     //step counter
+int stepsPerRev = 512;  //number of steps per lap
  
-//secuencia media fase
 const int numSteps = 8;
 const int stepsLookup[8] = { B1000, B1100, B0100, B0110, B0010, B0011, B0001, B1001 };
 
@@ -39,38 +48,60 @@ void serveJpg() {
   frame->writeTo(client);
 }
 
-void handleJpgHi()
-{
+void handleJpgHi() {
   if (!esp32cam::Camera.changeResolution(hiRes)) {
     Serial.println("SET-HI-RES FAIL");
   }
   serveJpg();
 }
 
-
-
-void handleJpg()
-{
-  server.sendHeader("Location", "/cam-hi.jpg");
-  server.send(302, "", "");
+void initialMove() {
+  moveRight();
+  delay(50);
+  moveLeft();
+  off();
 }
 
-void derecha() {
-      for (int i = 0; i < 128; i++) {
-        clockwise();
-        delayMicroseconds(motorSpeed);
-      }
-      handleJpgHi();
+void off() {
+  digitalWrite(motorPin1,LOW);
+  digitalWrite(motorPin2,LOW);
+  digitalWrite(motorPin3,LOW);
+  digitalWrite(motorPin4,LOW);  
 }
 
-void izquierda() {
+void moveLeft() {
   for (int i = 0; i < 128; i++) { //tenia 256
     anticlockwise();
     delayMicroseconds(motorSpeed);
-  }
-  handleJpgHi();
+  }  
+  
 }
 
+void moveRight() {
+  for (int i = 0; i < 128; i++) {
+    clockwise();
+    delayMicroseconds(motorSpeed);
+  }  
+
+}
+
+void moverDerecha() {
+  moveRight();
+  origin++;
+  off();
+  info();
+}
+
+void moverIzquierda() {
+  moveLeft();
+  origin--;
+  off();
+  info();
+}
+
+void info() {
+  server.send(200, "text/plain", "{ \"pos\":\""+String(origin)+"\"}");
+}
 
 void setup()
 {
@@ -108,14 +139,16 @@ void setup()
 
   server.on("/cam", handleJpgHi);
 
-  server.on("/derecha", derecha);
-  server.on("/izquierda", izquierda);
-
+  server.on("/info", info);
+  server.on("/moverIzquierda", moverIzquierda);
+  server.on("/moverDerecha", moverDerecha);
+  
+  initialMove();
+  
   server.begin();
 }
 
-void loop()
-{
+void loop(){
   server.handleClient();
 }
 
