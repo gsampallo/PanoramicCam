@@ -2,7 +2,9 @@
 
 Take panoramic photos with ESP32-Cam and Python
 
+(Gif take a minute to showup)
 
+![Demo](http://www.gsampallo.com/blog/wp-content/uploads/2020/04/demo_gif.gif)
 
 ## Installation
 
@@ -27,3 +29,4 @@ Example:
 docker run -it --rm -v C:/Proyects/PanoramicCam:/app espcam python panoramic.py
 ```
 
+Read the full article on my [blog](http://www.gsampallo.com/blog/?p=644)
