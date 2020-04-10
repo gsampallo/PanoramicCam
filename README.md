@@ -27,4 +27,12 @@ Example:
 docker run -it --rm -v C:/Proyects/PanoramicCam:/app espcam python panoramic.py
 ```
 
-Read the full article on my [blog](http://www.gsampallo.com/blog/?p=644)
+Read the article about the software on my [blog](http://www.gsampallo.com/blog/?p=644)
+
+and the article about the harware [blog](http://www.gsampallo.com/blog/?p=644)
+
+Download 3d model [Thingiverse] (https://www.thingiverse.com/thing:4270344)
+
+Youtube video with more details
+
+[![Video](https://img.youtube.com/vi/GJNhcEJuNEQ/0.jpg)](https://www.youtube.com/watch?v=GJNhcEJuNEQ)
