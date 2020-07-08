@@ -2,7 +2,7 @@
 
 Take panoramic photos with ESP32-Cam and Python
 
-![Demo](http://www.gsampallo.com/blog/wp-content/uploads/2020/04/panoramic.jpg)
+![Demo](https://www.gsampallo.com/wp-content/uploads/2020/04/panoramic.jpg)
 
 ## Installation
 
